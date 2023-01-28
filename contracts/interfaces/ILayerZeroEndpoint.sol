@@ -1,8 +1,9 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MIT
 
-pragma solidity >=0.5.0;
+pragma solidity >=0.8.0;
 
 import "./ILayerZeroUserApplicationConfig.sol";
+import "hardhat/console.sol";
 
 interface ILayerZeroEndpoint is ILayerZeroUserApplicationConfig {
     // @notice send a LayerZero message to the specified address at a LayerZero endpoint.
@@ -13,7 +14,6 @@ interface ILayerZeroEndpoint is ILayerZeroUserApplicationConfig {
     // @param _zroPaymentAddress - the address of the ZRO token holder who would pay for the transaction
     // @param _adapterParams - parameters for custom functionality. e.g. receive airdropped native gas from the relayer on destination
     function send(uint16 _dstChainId, bytes calldata _destination, bytes calldata _payload, address payable _refundAddress, address _zroPaymentAddress, bytes calldata _adapterParams) external payable;
-
     // @notice used by the messaging library to publish verified payload
     // @param _srcChainId - the source chain identifier
     // @param _srcAddress - the source contract (as bytes) at the source chain
@@ -23,7 +23,7 @@ interface ILayerZeroEndpoint is ILayerZeroUserApplicationConfig {
     // @param _payload - verified payload to send to the destination contract
     function receivePayload(uint16 _srcChainId, bytes calldata _srcAddress, address _dstAddress, uint64 _nonce, uint _gasLimit, bytes calldata _payload) external;
 
-    // @notice get the inboundNonce of a receiver from a source chain which could be EVM or non-EVM chain
+    // @notice get the inboundNonce of a lzApp from a source chain which could be EVM or non-EVM chain
     // @param _srcChainId - the source chain identifier
     // @param _srcAddress - the source chain contract address
     function getInboundNonce(uint16 _srcChainId, bytes calldata _srcAddress) external view returns (uint64);
