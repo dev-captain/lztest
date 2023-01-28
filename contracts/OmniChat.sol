@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@layerzerolabs/solidity-examples/contracts/lzApp/NonblockingLzApp.sol";
-
+import "hardhat/console.sol";
 contract OmniChat is NonblockingLzApp {
+    address public ten;
     struct Message {
         address from;
         address to;
@@ -12,7 +13,9 @@ contract OmniChat is NonblockingLzApp {
     }
     mapping(bytes32 => Message[]) messages;
 
-    constructor(address _lzEndpoint) NonblockingLzApp(_lzEndpoint) {}
+    constructor(address _lzEndpoint) NonblockingLzApp(_lzEndpoint) {
+        ten = _lzEndpoint;
+    }
 
     function sendMessage(uint16 dstChainId, address dstAccountAddress, string calldata text) external payable {
         bytes memory payload = abi.encode(msg.sender, dstAccountAddress, block.timestamp, text);
@@ -21,7 +24,8 @@ contract OmniChat is NonblockingLzApp {
 
     function _nonblockingLzReceive(uint16 srcChainId, bytes memory, uint64, bytes memory payload) internal override {
         (address from, address to, uint timestamp, string memory text) = abi.decode(payload, (address, address, uint, string));
-        
+        // console.log(srcChainId);
+        // console.logAddress(from);
         Message memory message = Message(from, to, timestamp, text);
         bytes32 chatId = getChatId(srcChainId, from, to);
 
@@ -30,6 +34,8 @@ contract OmniChat is NonblockingLzApp {
 
     function getMessages(uint16 chainId, address counterpartAddress) external view returns(Message[] memory) {
         bytes32 chatId = getChatId(chainId, msg.sender, counterpartAddress);
+        console.logAddress(msg.sender);
+        console.logAddress(counterpartAddress);
         return messages[chatId];
     }
 

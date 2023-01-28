@@ -9,11 +9,11 @@ describe("OmniChat", () => {
     const LZEndpointMock = await hre.ethers.getContractFactory("LZEndpointMock");
     this.srcLzEndpointMock = await LZEndpointMock.deploy(this.srcChainId);
     this.dstLzEndpointMock = await LZEndpointMock.deploy(this.dstChainId);
-
-    this.mockEstimatedNativeFee = ethers.utils.parseEther("0.001");
-    this.mockEstimatedZroFee = ethers.utils.parseEther("0.00025");
-    await this.srcLzEndpointMock.setEstimatedFees(this.mockEstimatedNativeFee, this.mockEstimatedZroFee);
-    await this.dstLzEndpointMock.setEstimatedFees(this.mockEstimatedNativeFee, this.mockEstimatedZroFee);
+    // console.log(this.dstLzEndpointMock.address);
+    // this.mockEstimatedNativeFee = ethers.utils.parseEther("0.001");
+    // this.mockEstimatedZroFee = ethers.utils.parseEther("0.00025");
+    // await this.srcLzEndpointMock.setEstimatedFees(this.mockEstimatedNativeFee, this.mockEstimatedZroFee);
+    // await this.dstLzEndpointMock.setEstimatedFees(this.mockEstimatedNativeFee, this.mockEstimatedZroFee);
 
     const OmniChat = await hre.ethers.getContractFactory("OmniChat");
     this.omniChatA = await OmniChat.deploy(this.srcLzEndpointMock.address);
@@ -27,13 +27,14 @@ describe("OmniChat", () => {
   });
 
   it("successfully sends messages", async () => {
-    const [srcAcc, dstAcc] = await ethers.getSigners();
-
-    await this.omniChatA.sendMessage(this.dstChainId, dstAcc.address, "test message 1", { value: ethers.utils.parseEther("0.5") });
-    const aMessages = await this.omniChatA.getMessages(this.dstChainId, dstAcc.address);
+    const [srcAcc, dstAcc,sd] = await ethers.getSigners();
+    // console.log(sd.address);
+    // await this.omniChatA.sendMessage(this.dstChainId, dstAcc.address, "test message 1", { value: ethers.utils.parseEther("0.5") });
+    await this.omniChatB.sendMessage(this.srcChainId, srcAcc.address, "test message 1", { value: ethers.utils.parseEther("0.5") });
+    const aMessages = await this.omniChatA.getMessages(this.dstChainId, srcAcc.address);
     const bMessages = await this.omniChatB.connect(dstAcc).getMessages(this.srcChainId, srcAcc.address);
-
-    expect(aMessages).to.have.lengthOf(0);
-    expect(bMessages).to.have.lengthOf(1);
+    console.log(aMessages);
+    expect(aMessages).to.have.lengthOf(1);
+    expect(bMessages).to.have.lengthOf(0);
   });
 });

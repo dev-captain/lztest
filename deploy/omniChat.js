@@ -10,6 +10,7 @@ async function main() {
 
   const OmniChat = await hre.ethers.getContractFactory("OmniChat");
   const endpointAddr = LZ_ADDRESS[hre.network.name];
+  console.log(endpointAddr);
   const omniChat = await OmniChat.deploy(endpointAddr);
 
   await omniChat.deployed();
