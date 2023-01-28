@@ -31,11 +31,11 @@ module.exports = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     mumbai: {
-      url: process.env.MUMBAI_URL || "",
+      url: "https://rpc-mumbai.maticvigil.com",
       gasPrice: 35000000000,
       saveDeployments: true,
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts:['c2d977aee92356227b2e4a5a5f3f55c840104bf48fabceb6c229fdfbf8f2f611']
+        
     },
     fuji: {
       url: process.env.FUJI_URL || "",
@@ -43,9 +43,11 @@ module.exports = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     testnet: {
-      url: process.env.FANTOM_TESTNET_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      url: "https://rpc.testnet.fantom.network/",
+      accounts:['ebc99e9951adf77854720c36ec25fed8fa70781418ee5e1adf6e1db0d9c824a4'],
+      gas: 2100000, 
+      gasPrice: 8000000000,
+      saveDeployments: true,
     },
   },
   gasReporter: {

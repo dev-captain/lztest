@@ -13,20 +13,20 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
         uint16 _count,
         bytes _payload
     );
-    ILayerZeroEndpoint public endpoint;
+    ILayerZeroEndpoint public lzendpoint;
     uint16 public messageCount;
     bytes public message;
 
     constructor(address _endpoint) {
-        endpoint = ILayerZeroEndpoint(_endpoint);
+        lzendpoint = ILayerZeroEndpoint(_endpoint);
     }
 
     function sendMsg(
         uint16 _dstChainId,
         bytes calldata _destination,
         bytes calldata payload
-    ) public payable {
-        endpoint.send{value: msg.value}(
+    ) public payable returns(uint256) {
+        lzendpoint.send{value: msg.value}(
             _dstChainId,
             _destination,
             payload,
@@ -34,6 +34,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
             address(this),
             bytes("")
         );
+        return 234;
     }
 
     function lzReceive(
@@ -42,7 +43,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
         uint64,
         bytes memory _payload
     ) external override {
-        require(msg.sender == address(endpoint));
+        require(msg.sender == address(lzendpoint),"Caller is not endpoint");
         address from;
         assembly {
             from := mload(add(_from, 20))
@@ -51,7 +52,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
             keccak256(abi.encodePacked((_payload))) ==
             keccak256(abi.encodePacked((bytes10("ff"))))
         ) {
-            endpoint.receivePayload(
+            lzendpoint.receivePayload(
                 1,
                 bytes(""),
                 address(0x0),
@@ -74,7 +75,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
         bytes calldata _adapterParams
     ) external view returns (uint256 nativeFee, uint256 zroFee) {
         return
-            endpoint.estimateFees(
+            lzendpoint.estimateFees(
                 _dstChainId,
                 _userApplication,
                 _payload,

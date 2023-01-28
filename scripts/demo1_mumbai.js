@@ -4,7 +4,7 @@ const { ethers } = require("ethers");
 async function main() {
   const LayerZeroDemo1 = await hre.ethers.getContractFactory("LayerZeroDemo1");
   const layerZeroDemo1 = await LayerZeroDemo1.attach(
-    "0x37587469690CC37EE19Ff6163ce7275BB1b17d3b"
+    "0xe872275249beD8C09675026B64Dfb268FDbaB21A"
   );
 
   const count = await layerZeroDemo1.messageCount();
